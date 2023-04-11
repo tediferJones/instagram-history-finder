@@ -7,15 +7,18 @@ function App() {
   const [filters, setFilters] = useState({
     startDate: '',
     endDate: '',
+    minDate: '',
+    maxDate: '',
     authorsToRemove: [],
   });
   const [data, setData] = useState({
     // Merge videoHistory and postHistory, also merge adNames and followingNames, then move the whole thing to the filter state, because that's what it's actually used for
     // And if you do all that just rename this state var to History and make it an array instead of an obj
-    videoHistory: [],
-    postHistory: [],
+    // videoHistory: [],
+    // postHistory: [],
     adNames: [],
     followingNames: [],
+    history: [],
   })
 
   function getFiles(e) {
@@ -36,7 +39,7 @@ function App() {
         .impressions_history_videos_watched.map(item => {
           return {
             author: item.string_map_data.Author ? item.string_map_data.Author.value : 'DELETED',
-            timeStamp: item.string_map_data.Time.timestamp,
+            timeStamp: item.string_map_data.Time.timestamp * 1000,
             time: new Date(item.string_map_data.Time.timestamp * 1000).toLocaleString(),
             postType: 'Video',
           }
@@ -46,7 +49,7 @@ function App() {
         .impressions_history_posts_seen.map(item => {
           return {
             author: item.string_map_data.Author ? item.string_map_data.Author.value : 'DELETED',
-            timeStamp: item.string_map_data.Time.timestamp,
+            timeStamp: item.string_map_data.Time.timestamp * 1000,
             time: new Date(item.string_map_data.Time.timestamp * 1000).toLocaleString(),
             postType: 'Post',
           }
@@ -62,24 +65,38 @@ function App() {
           return item.string_list_data[0].value;
         })
 
-      // then convert these JSON strings to JS objects, and update state var
+      // Once we have our files imported as objects, we can perform some more data sanitization 
+      const history = [...videoHistory, ...postHistory].sort((a, b) => a.timeStamp - b.timeStamp);
+
+      const firstDate = new Date(history[0].time);
+      const minDate = new Date(firstDate.getTime() - (firstDate.getTimezoneOffset() * 60000))
+        .toISOString().slice(0, -8);
+
+      const lastDate = new Date(history[history.length - 1].time);
+      const maxDate = new Date(lastDate.getTime() - (lastDate.getTimezoneOffset() * 60000) + 60000)
+        .toISOString().slice(0, -8);
+
       setData({
-        videoHistory,
-        postHistory,
         adNames,
         followingNames,
+        history,
       })
-      // CONSIDER MERGING videoHistory AND postHistory AND THEN SORTING THEM UP HERE
-      // ALSO CONSIDER setting filter state here,
-      // This will allow you to set default dates for the calender inputs
-      // Then handle changes to the form via our filterHandler
+
+      setFilters({
+        minDate,
+        maxDate,
+        startDate: minDate,
+        endDate: maxDate,
+        // authorsToRemove: [],
+      })
     }
   }
 
-  function filterHandler(e) {
-    // set State for filter vars
-    console.log(e.target)
-    // GET DEFAULT STATE WORKING, THEN WORRY ABOUT HANDLING CHANGES
+  function filterChangeHandler(e) {
+    setFilters({
+      ...filters,
+      [e.target.name]: e.target.value,
+    })
   }
 
   return (
@@ -92,46 +109,62 @@ function App() {
       </form>
 
       <form>
-        <label htmlFor='fromDate'>FROM DATE</label>
+        <label htmlFor='startDate'>FROM DATE</label>
         {/* use min and max on these inputs */}
-        <input id='fromDate' name='fromDate' type='datetime-local' onChange={filterHandler}></input>
-        <label htmlFor='toDate'>TO DATE</label>
-        <input id='toDate' from='toDate' type='datetime-local'  onChange={filterHandler}></input>
+        <input
+          id='startDate'
+          name='startDate'
+          type='datetime-local'
+          onChange={filterChangeHandler}
+          value={filters.startDate}
+          min={filters.minDate}
+          max={filters.maxDate}
+        ></input>
+        <label htmlFor='endDate'>TO DATE</label>
+        <input
+          id='endDate'
+          name='endDate'
+          type='datetime-local'
+          onChange={filterChangeHandler}
+          value={filters.endDate}
+          min={filters.minDate}
+          max={filters.maxDate}
+        ></input>
+        {/* ADD CHECK BOXES FOR remove already following AND remove ad posts */}
       </form>
 
-      <h3>VIDEO HISTORY: {data.videoHistory.length}</h3>
-      <h4>VIDEO HISTORY DATA SAMPLE: {JSON.stringify(data.videoHistory[0])}</h4>
-      <h3>POST HISTORY: {data.postHistory.length}</h3>
-      <h4>POST HISTORY DATA SAMPLE: {JSON.stringify(data.postHistory[0])}</h4>
+      <h3>VIDEO HISTORY: {data.history.filter(item => item.postType === 'Video').length}</h3>
+      <h4>VIDEO HISTORY DATA SAMPLE: {JSON.stringify(data.history.filter(item => item.postType === 'Video')[0])}</h4>
+      <h3>POST HISTORY: {data.history.filter(item => item.postType === 'Post').length}</h3>
+      <h4>POST HISTORY DATA SAMPLE: {JSON.stringify(data.history.filter(item => item.postType === 'Post')[0])}</h4>
       <h3>AD HISTORY: {data.adNames.length}</h3>
       <h4>AD HISTORY DATA SAMPLE: {JSON.stringify(data.adNames[0])}</h4>
       <h3>FOLLOWING: {data.followingNames.length}</h3>
       <h4>FOLLOWING DATA SAMPLE: {JSON.stringify(data.followingNames[0])}</h4>
       {/* <p>{JSON.stringify(data)}</p> */}
 
-      {/* Add a seperate form somewhere up here, this will control our filter parameters */}
-
       <div>
-        {[...data.videoHistory, ...data.postHistory]
-            .sort((a, b) => a.timeStamp - b.timeStamp)
-            .filter(item => {
-              // This will re-run on every item, filter state needs to be defined before this happens
-              return true;
-            })
-            .map(item => {
-              return (
-                <div key={uuidv4()}>
-                  {/* {JSON.stringify(item)} */}
-                  {item.author === 'DELETED' ? <h3>DELETED</h3> : 
-                    <a href={`https://www.instagram.com/${item.author}`}>
-                      <h3>@{item.author}</h3>
-                    </a>
-                  }
-                  <h3>{item.time}</h3>
-                  <h3>{item.postType}</h3>
-                </div>
-              )
-            })}
+        {data.history.filter(item => {
+          // This will re-run on every item, filter state needs to be defined before this happens
+          if (item.timeStamp >= new Date(filters.startDate).getTime()
+            && item.timeStamp <= new Date(filters.endDate).getTime()) {
+            return true;
+          } else {
+            return false;
+          }
+        }).map(item => {
+          return (
+            <div key={uuidv4()}>
+              {item.author === 'DELETED' ? <h3>DELETED</h3> : 
+                <a href={`https://www.instagram.com/${item.author}`}>
+                  <h3>@{item.author}</h3>
+                </a>
+              }
+              <h3>{item.time}</h3>
+              <h3>{item.postType}</h3>
+            </div>
+          )
+        })}
       </div>
     </div>
   );
