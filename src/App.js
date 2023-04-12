@@ -6,56 +6,59 @@ import CuratedHistory from './components/CuratedHistory.js';
 import './App.css';
 
 function App() {
-  const [filters, setFilters] = useState({
-    // break this up into two objects, timeFilters, and authorFilters
-    startDate: '',
-    endDate: '',
+  const [history, setHistory] = useState([]);
+  const [timeFilters, setTimeFilters] = useState({
+    filterStartDate: '',
+    filterEndDate: '',
     minDate: '',
     maxDate: '',
+  })
+  const [authorFilters, setAuthorFilters] = useState({
     removeAds: false,
-    adNames: [],
+    adAuthors: [],
     removeFollowing: false,
-    followingNames: [],
-  });
-  const [history, setHistory] = useState([]);
+    followingAuthors: [],
+  })
+
+  function getISOString(date, roundUp=false) {
+    // default behavior is to round down
+    const formattedDate = new Date(date);
+    const offset = roundUp ? 60000 : 0;
+    return new Date(formattedDate.getTime() - (formattedDate.getTimezoneOffset() * 60000) + offset).toISOString().slice(0, -8);
+  }
 
   function setInitialState(videoHistory, postHistory, adNames, followingNames) {
     // Once our files have been extracted and turned into objects, we can set state of history and filters, based on certain values
     const history = [...videoHistory, ...postHistory].sort((a, b) => a.timeStamp - b.timeStamp);
 
-    // Our date string must be re-formatted to ISOString for the calender input values
-    const firstDate = new Date(history[0].time);
-    const minDate = new Date(firstDate.getTime() - (firstDate.getTimezoneOffset() * 60000))
-      .toISOString().slice(0, -8);
-
-    // Our date string must be re-formatted to ISOString for the calender input values
-    const lastDate = new Date(history[history.length - 1].time);
-    const maxDate = new Date(lastDate.getTime() - (lastDate.getTimezoneOffset() * 60000) + 60000)
-      .toISOString().slice(0, -8);
+    // dates must be ISOStrings for use in <input type='datetime-local'/>
+    const minDate = getISOString(history[0].time);
+    const maxDate = getISOString(history[history.length - 1].time, true);
 
     setHistory(history);
-
-    setFilters({
-      ...filters,
+    setTimeFilters({
       minDate,
       maxDate,
-      startDate: minDate,
-      endDate: maxDate,
-      adNames,
-      followingNames,
+      filterStartDate: minDate,
+      filterEndDate: maxDate,
+    })
+    setAuthorFilters({
+      ...authorFilters,
+      adAuthors: adNames,
+      followingAuthors: followingNames,
     })
   }
 
-  function filterChangeHandler(e) {
-    setFilters({
-      ...filters,
+  function timeFiltersHandler(e) {
+    setTimeFilters({
+      ...timeFilters,
       [e.target.name]: e.target.value,
     })
   }
 
-  function checkboxChange(e) {
-    setFilters({
-      ...filters,
+  function authorFiltersHandler(e) {
+    setAuthorFilters({
+      ...authorFilters,
       [e.target.name]: !JSON.parse(e.target.value),
     })
   }
@@ -65,17 +68,20 @@ function App() {
       <h1>HELLO WORLD</h1>
       <FileSelector setInitialState={setInitialState} />
       <FilterSelector 
-        filters={filters}
-        filterChangeHandler={filterChangeHandler}
-        checkboxChange={checkboxChange}
+        timeFilters={timeFilters}
+        authorFilters={authorFilters}
+        timeFiltersHandler={timeFiltersHandler}
+        authorFiltersHandler={authorFiltersHandler}
       />
       <HistoryMetaData
         history={history}
-        filters={filters}
+        timeFilters={timeFilters}
+        authorFilters={authorFilters}
       />
       <CuratedHistory 
         history={history}
-        filters={filters}
+        timeFilters={timeFilters}
+        authorFilters={authorFilters}
       />
     </div>
   );
@@ -83,10 +89,9 @@ function App() {
 
 // TO-DO
 //    - Add error handling to FileSelector, see file for more details
-//    - Convert filters to two seperate objcts
 //    - Simplify setInitialState function
 //    - Simplify getFile function in FileSelector if possible
+//    - Try to make getFile easily expandable, what if we want to add more files in future?
 //    - Styling
-//
 
 export default App;

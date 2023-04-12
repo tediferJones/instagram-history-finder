@@ -1,26 +1,26 @@
 function FilterSelector(props) {
   return (
     <form>
-      <label htmlFor='startDate'>FROM DATE</label>
+      <label htmlFor='filterStartDate'>FROM DATE</label>
       <input
-        id='startDate'
-        name='startDate'
+        id='filterStartDate'
+        name='filterStartDate'
         type='datetime-local'
-        onChange={props.filterChangeHandler}
-        value={props.filters.startDate}
-        min={props.filters.minDate}
-        max={props.filters.maxDate}
+        onChange={props.timeFiltersHandler}
+        value={props.timeFilters.filterStartDate}
+        min={props.timeFilters.minDate}
+        max={props.timeFilters.maxDate}
       ></input>
 
-      <label htmlFor='endDate'>TO DATE</label>
+      <label htmlFor='filterEndDate'>TO DATE</label>
       <input
-        id='endDate'
-        name='endDate'
+        id='filterEndDate'
+        name='filterEndDate'
         type='datetime-local'
-        onChange={props.filterChangeHandler}
-        value={props.filters.endDate}
-        min={props.filters.minDate}
-        max={props.filters.maxDate}
+        onChange={props.timeFiltersHandler}
+        value={props.timeFilters.filterEndDate}
+        min={props.timeFilters.minDate}
+        max={props.timeFilters.maxDate}
       ></input>
 
       <hr />
@@ -30,8 +30,8 @@ function FilterSelector(props) {
         id='removeAds'
         name='removeAds' 
         type='checkbox' 
-        onChange={props.checkboxChange} 
-        value={props.filters.removeAds}
+        onChange={props.authorFiltersHandler} 
+        value={props.authorFilters.removeAds}
       ></input>
       
       <label htmlFor='removeFollowing'>Remove Following Posts/Videos?</label>
@@ -39,8 +39,8 @@ function FilterSelector(props) {
         id='removeFollowing'
         name='removeFollowing'
         type='checkbox'
-        onChange={props.checkboxChange}
-        value={props.filters.removeFollowing}
+        onChange={props.authorFiltersHandler}
+        value={props.authorFilters.removeFollowing}
       ></input>
     </form>
   )

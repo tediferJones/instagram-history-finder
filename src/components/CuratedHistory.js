@@ -1,24 +1,24 @@
 import { v4 as uuidv4 } from 'uuid';
 
 function CuratedHistory(props) {
+  const filterStartTime = new Date(props.timeFilters.filterStartDate).getTime();
+  const filterEndTime = new Date(props.timeFilters.filterEndDate).getTime();
+
+  let authorToRemove = [];
+  if (props.authorFilters.removeAds) {
+    authorToRemove = authorToRemove.concat(props.authorFilters.adAuthors)
+  }
+  if (props.authorFilters.removeFollowing) {
+    authorToRemove = authorToRemove.concat(props.authorFilters.followingAuthors)
+  }
+
   function filterHistoryByTime(item) {
-    // first filter by time, then filter out authors from remaining history
-    if (item.timeStamp >= new Date(props.filters.startDate).getTime()
-      && item.timeStamp <= new Date(props.filters.endDate).getTime()) {
+    if (item.timeStamp >= filterStartTime && item.timeStamp <= filterEndTime) {
       return true;
     }
   }
 
   function filterHistoryByAuthor(item) {
-    // check filter boolean values, create an array of names to check against
-    let authorToRemove = [];
-    if (props.filters.removeAds) {
-      authorToRemove = authorToRemove.concat(props.filters.adNames)
-    }
-    if (props.filters.removeFollowing) {
-      authorToRemove = authorToRemove.concat(props.filters.followingNames)
-    }
-
     return !authorToRemove.includes(item.author);
   }
 
