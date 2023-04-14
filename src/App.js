@@ -35,7 +35,9 @@ function App() {
     const minDate = getISOString(history[0].time);
     const maxDate = getISOString(history[history.length - 1].time, true);
 
-    console.log(history);
+    // console.log(history);
+    const sanitizedAdNames = [...new Set(adNames)]
+    sanitizedAdNames.splice(sanitizedAdNames.indexOf('DELETED'), 1)
 
     setHistory(history);
     setTimeFilters({
@@ -46,59 +48,9 @@ function App() {
     })
     setAuthorFilters({
       ...authorFilters,
-      adAuthors: adNames,
+      // adAuthors: adNames,
+      adAuthors: sanitizedAdNames,
       followingAuthors: followingNames,
-    })
-  }
-
-  function setInitialStateV2(data) {
-    // UNDO EVERYTHING RELATED TO THIS
-    // It's more confusing, verbose, and actually slower than manually the pulling values from objects
-    function addPostType(item, postType) {
-      return {
-        ...item,
-        postType,
-      }
-    }
-    // Add our extra data types
-    for (let key of Object.keys(data)) {
-      if (key.includes('History')) {
-        data[key] = data[key].map(item => {
-          return {
-            // ...item,
-            author: item.value,
-            timeStamp: item.timestamp * 1000,
-            time: new Date(item.timestamp * 1000).toLocaleString(),
-          }
-        }) 
-      }
-    }
-    
-    const history = [
-      ...data.videoHistory.map(item => addPostType(item, 'Video')),
-      ...data.postHistory.map(item => addPostType(item, 'Post')),
-    ].sort((a, b) => a.timeStamp - b.timeStamp);
-
-    // console.log(data.videoHistory.map(item => addPostType(item, 'Video')));
-    // console.log(data);
-    console.log(history);
-
-    const minDate = getISOString(history[0].time);
-    const maxDate = getISOString(history[history.length - 1].time, true);
-    // console.log(minDate)
-    // console.log(maxDate)
-
-    setHistory(history);
-    setTimeFilters({
-      minDate,
-      maxDate,
-      filterStartDate: minDate,
-      filterEndDate: maxDate,
-    })
-    setAuthorFilters({
-      ...authorFilters,
-      adAuthors: data.adNames,
-      followingAuthors: data.followingNames,
     })
   }
 
@@ -119,9 +71,7 @@ function App() {
   return (
     <div>
       <h1>HELLO WORLD</h1>
-      <FileSelector setInitialState={setInitialState}
-        setInitialStateV2={setInitialStateV2}
-      />
+      <FileSelector setInitialState={setInitialState} />
       <FilterSelector 
         timeFilters={timeFilters}
         authorFilters={authorFilters}
