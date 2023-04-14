@@ -3,7 +3,6 @@ import FileSelector from './components/FileSelector.js';
 import FilterSelector from './components/FilterSelector.js';
 import HistoryMetaData from './components/HistoryMetaData.js';
 import CuratedHistory from './components/CuratedHistory.js';
-import './App.css';
 
 function App() {
   const [history, setHistory] = useState([]);
@@ -70,7 +69,7 @@ function App() {
 
   return (
     <div>
-      <h1>HELLO WORLD</h1>
+      <h1 className='text-3xl font-bold underline m-6'>Instagram History Finder</h1>
       <FileSelector setInitialState={setInitialState} />
       <FilterSelector 
         timeFilters={timeFilters}
@@ -97,6 +96,7 @@ function App() {
 //    - Simplify setInitialState function
 //    - Simplify getFile function in FileSelector if possible
 //    - Try to make getFile easily expandable, what if we want to add more files in future?
-//    - Styling
+//    - Add checkbox for remove Deleted posts/videos
+//    - Styling: Tailwind Cheat Sheet: https://nerdcave.com/tailwind-cheat-sheet
 
 export default App;

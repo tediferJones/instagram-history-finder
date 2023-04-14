@@ -26,20 +26,27 @@ function CuratedHistory(props) {
 
   return (
     <div>
-      <h1>CURATED HISTORY ({curatedHistory.length})</h1>
-      {curatedHistory.map(item => {
-        return (
-          <div key={uuidv4()}>
-            {item.author === 'DELETED' ? <h3>DELETED</h3> : 
-            <a href={`https://www.instagram.com/${item.author}`}>
-              <h3>@{item.author}</h3>
-            </a>
-            }
-            <h3>{item.time}</h3>
-            <h3>{item.postType}</h3>
-          </div>
-        )
-      })}
+      <h1 className='text-3xl p-8'
+      >CURATED HISTORY ({curatedHistory.length})</h1>
+      <div className='flex flex-col items-center'>
+        {curatedHistory.map(item => {
+          return (
+            <div className='p-4'
+              key={uuidv4()}
+            >
+              {item.author === 'DELETED' ? <h3>DELETED</h3> : 
+              <a href={`https://www.instagram.com/${item.author}`}>
+                <h3>@{item.author}</h3>
+              </a>
+              }
+              <div className='flex justify-between gap-4'>
+                <h3>{item.time}</h3>
+                <h3>{item.postType}</h3>
+              </div>
+            </div>
+          )
+        })}
+      </div>
     </div>
   )
 }

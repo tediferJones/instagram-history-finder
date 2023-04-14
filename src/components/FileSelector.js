@@ -52,15 +52,21 @@ function FileSelector(props) {
   }
 
   return (
-    <form onSubmit={getFiles}>
-      <label htmlFor='fileSelect'>SELECT ZIP</label>
-      <input
-        type='file'
-        id='fileSelect'
-        name='fileSelect'
-        accept='.zip'
-      />
-      <button>UNZIP</button>
+    <form onSubmit={getFiles} className='flex flex-wrap justify-center items-center p-8 max-w-full'>
+      <div className='flex flex-col gap-4'>
+        <label className='text-lg p-4'
+          htmlFor='fileSelect'
+        >Please select your zip file</label>
+        <input
+          className='flex-shrink text-lg bg-gray-200 p-4'
+          type='file'
+          id='fileSelect'
+          name='fileSelect'
+          accept='.zip'
+        />
+      </div>
+      <button className='text-xl bg-gray-200 p-4 m-6 hover:bg-gray-600 hover:text-white duration-700'
+      >UNZIP</button>
     </form>
   )
 }
