@@ -58,6 +58,17 @@ function FilterSelector(props) {
             value={props.authorFilters.removeFollowing}
           ></input>
         </div>
+
+        <div className='flex justify-center items-center gap-4'>
+          <label htmlFor='removeDeleted'>Remove Deleted Posts/Videos?</label>
+          <input className='h-6 w-6'
+            id='removeDeleted'
+            name='removeDeleted'
+            type='checkbox'
+            onChange={props.authorFiltersHandler}
+            value={props.authorFilters.removeDeleted}
+          ></input>
+        </div>
       </div>
     </form>
   )

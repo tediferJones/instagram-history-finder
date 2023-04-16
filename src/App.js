@@ -17,6 +17,8 @@ function App() {
     adAuthors: [],
     removeFollowing: false,
     followingAuthors: [],
+    removeDeleted: false,
+    deletedAuthors: ['DELETED'],
   })
 
   function getISOString(date, roundUp=false) {
@@ -98,5 +100,6 @@ function App() {
 //    - Try to make getFile easily expandable, what if we want to add more files in future?
 //    - Add checkbox for remove Deleted posts/videos
 //    - Styling: Tailwind Cheat Sheet: https://nerdcave.com/tailwind-cheat-sheet
+//    - Add how-to guide or FAQ area explaining how to use the program, i.e. where to download the JSON zip
 
 export default App;
