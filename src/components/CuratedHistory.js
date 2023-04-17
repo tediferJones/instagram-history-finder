@@ -27,9 +27,6 @@ function CuratedHistory(props) {
 
   const curatedHistory = props.history.filter(filterHistoryByTime).filter(filterHistoryByAuthor);
 
-  // itemContainer: flex flex-wrap
-  // items: FIXED HEIGHT/WIDTH, flex-grow
-
   return (
     <div>
       <h1 className='text-3xl p-8'

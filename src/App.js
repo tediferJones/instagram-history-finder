@@ -3,6 +3,7 @@ import FileSelector from './components/FileSelector.js';
 import FilterSelector from './components/FilterSelector.js';
 import HistoryMetaData from './components/HistoryMetaData.js';
 import CuratedHistory from './components/CuratedHistory.js';
+import Guide from './components/Guide.js';
 
 function App() {
   const [history, setHistory] = useState([]);
@@ -36,7 +37,6 @@ function App() {
     const minDate = getISOString(history[0].time);
     const maxDate = getISOString(history[history.length - 1].time, true);
 
-    // console.log(history);
     const sanitizedAdNames = [...new Set(adNames)]
     sanitizedAdNames.splice(sanitizedAdNames.indexOf('DELETED'), 1)
 
@@ -49,7 +49,6 @@ function App() {
     })
     setAuthorFilters({
       ...authorFilters,
-      // adAuthors: adNames,
       adAuthors: sanitizedAdNames,
       followingAuthors: followingNames,
     })
@@ -72,6 +71,7 @@ function App() {
   return (
     <div>
       <h1 className='text-3xl font-bold underline m-6'>Instagram History Finder</h1>
+      <Guide />
       <FileSelector setInitialState={setInitialState} />
       <FilterSelector 
         timeFilters={timeFilters}
@@ -95,11 +95,8 @@ function App() {
 
 // TO-DO
 //    - Add error handling to FileSelector, see file for more details
-//    - Simplify setInitialState function
-//    - Simplify getFile function in FileSelector if possible
-//    - Try to make getFile easily expandable, what if we want to add more files in future?
-//    - Add checkbox for remove Deleted posts/videos
+//      - Add error handling for when no zip file is selected, just throw an error saying no file selected
 //    - Styling: Tailwind Cheat Sheet: https://nerdcave.com/tailwind-cheat-sheet
-//    - Add how-to guide or FAQ area explaining how to use the program, i.e. where to download the JSON zip
+//    - Add filters to show only videos or only posts
 
 export default App;
