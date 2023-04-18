@@ -22,14 +22,24 @@ function Guide() {
         >{status === 'hidden' ? 'Not sure what to do? Click Me!' : 'Close'}</h3>
 
         <ol className={'list-inside list-decimal ' + status}>
-          <li className='p-8'>Sign into your instagram account from the desktop website</li>
+          <li className='p-8'>Sign into&nbsp; 
+            <a className='font-semibold underline'
+              href='https://www.instagram.com'
+              target='_blank'
+              rel='noopener noreferrer'
+            >Instagram</a>
+          &nbsp;from the browser (mobile or desktop)</li>
           <ul className='px-16 list-inside list-disc'>
-            <li>The mobile website and app do not provide the option to download the data as JSON</li>
+            <li>The Instagram app does not provide the option to download the data as JSON</li>
           </ul>
           <li className='p-8'>Request Your Data</li>
           <ul className='px-16 list-inside list-disc'>
             <li>
-              <a href='https://www.instagram.com/download/request' className='font-semibold underline'>Click Here</a> or manually navigate to More {'>'} Your Activity {'>'} Download Your Information
+              <a className='font-semibold underline'
+                href='https://www.instagram.com/download/request'
+                target='_blank'
+                rel='noopener noreferrer'
+              >Click Here</a> or manually navigate to More {'>'} Your Activity {'>'} Download Your Information
             </li>
             <li className='font-semibold'>MAKE SURE TO SELECT 'JSON' AS THE INFORMATION FORMAT</li>
             <li>Click next and enter your password when prompted</li>

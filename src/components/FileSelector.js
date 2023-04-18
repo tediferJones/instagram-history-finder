@@ -3,15 +3,15 @@ import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 function FileSelector(props) {
-  // rename to errors, and make it an array of strings
-  // if array is longer than 0, display errors to user
   const [errors, setErrors] = useState([]);
 
   function getFiles(e) {
     e.preventDefault();
     const file = e.target.fileSelect.files[0];
     if (file === undefined) {
-      setErrors(errors.concat('Error: No File Selected'))
+      if (!errors.includes('Error: No File Selected')) {
+        setErrors(errors.concat('Error: No File Selected'))
+      }
       return
     } else {
       setErrors(errors.filter(err => err !== 'Error: No File Selected'))
@@ -24,43 +24,62 @@ function FileSelector(props) {
 
       // unzip the file with JSZip
       const unzippedData = await JSZip.loadAsync(e.target.result)
+      const availableFiles = Object.keys(unzippedData.files)
+      let videoHistory, postHistory, adNames, followingNames, errors;
+      videoHistory = postHistory = adNames = followingNames = [];
+      errors = [];
 
-      // NEEDS ERROR HANDLING for cases like: 'Couldn't find videos_watched.json'
       // If a file is not found, append a relevant error message to errors state, and set that variable to an empty array
-      // console.log(Object.keys(unzippedData.files).includes('ads_and_topics/videos_watched.json'))
-      // const availableFiles = Object.keys(unzippedData.files);
 
       // then grab the files (i.e. buffers) we want, and convert them to strings, then parse strings into JS objects
       // Also sanitize objects and add extra params if needed
-      const videoHistory = JSON.parse(await unzippedData.files['ads_and_topics/videos_watched.json'].async('string'))
-        .impressions_history_videos_watched.map(item => {
-          return {
-            author: item.string_map_data.Author ? item.string_map_data.Author.value : 'DELETED',
-            timeStamp: item.string_map_data.Time.timestamp * 1000,
-            time: new Date(item.string_map_data.Time.timestamp * 1000).toLocaleString(),
-            postType: 'Video',
-          }
-        });
+      if (availableFiles.includes('ads_and_topics/videos_watched.json')) {
+        videoHistory = JSON.parse(await unzippedData.files['ads_and_topics/videos_watched.json'].async('string'))
+          .impressions_history_videos_watched.map(item => {
+            return {
+              author: item.string_map_data.Author ? item.string_map_data.Author.value : 'DELETED',
+              timeStamp: item.string_map_data.Time.timestamp * 1000,
+              time: new Date(item.string_map_data.Time.timestamp * 1000).toLocaleString(),
+              postType: 'Video',
+            }
+          });
+      } else {
+        errors.push('Error: Could not find Video History')
+      }
 
-      const postHistory = JSON.parse(await unzippedData.files['ads_and_topics/posts_viewed.json'].async('string'))
-        .impressions_history_posts_seen.map(item => {
-          return {
-            author: item.string_map_data.Author ? item.string_map_data.Author.value : 'DELETED',
-            timeStamp: item.string_map_data.Time.timestamp * 1000,
-            time: new Date(item.string_map_data.Time.timestamp * 1000).toLocaleString(),
-            postType: 'Post',
-          }
-        })
+      if (availableFiles.includes('ads_and_topics/posts_viewed.json')) {
+        postHistory = JSON.parse(await unzippedData.files['ads_and_topics/posts_viewed.json'].async('string'))
+          .impressions_history_posts_seen.map(item => {
+            return {
+              author: item.string_map_data.Author ? item.string_map_data.Author.value : 'DELETED',
+              timeStamp: item.string_map_data.Time.timestamp * 1000,
+              time: new Date(item.string_map_data.Time.timestamp * 1000).toLocaleString(),
+              postType: 'Post',
+            }
+          })
+      } else {
+        errors.push('Error: Could not find Post History')
+      }
 
-      const adNames = JSON.parse(await unzippedData.files['ads_and_topics/ads_viewed.json'].async('string'))
-        .impressions_history_ads_seen.map(item => {
-          return item.string_map_data.Author ? item.string_map_data.Author.value : 'DELETED';
-        })
+      if (availableFiles.includes('ads_and_topics/ads_viewed.json')) {
+        adNames = JSON.parse(await unzippedData.files['ads_and_topics/ads_viewed.json'].async('string'))
+          .impressions_history_ads_seen.map(item => {
+            return item.string_map_data.Author ? item.string_map_data.Author.value : 'DELETED';
+          })
+      } else {
+        errors.push('Error: Could not find Ad Names')
+      }
 
-      const followingNames = JSON.parse(await unzippedData.files['followers_and_following/following.json'].async('string'))
-        .relationships_following.map(item => {
-          return item.string_list_data[0].value;
-        })
+      if (availableFiles.includes('followers_and_following/following.json')) {
+        followingNames = JSON.parse(await unzippedData.files['followers_and_following/following.json'].async('string'))
+          .relationships_following.map(item => {
+            return item.string_list_data[0].value;
+          })
+      } else {
+        errors.push('Error: Could not find Follower Names')
+      }
+
+      setErrors(errors)
 
       props.setInitialState(videoHistory, postHistory, adNames, followingNames);
     }

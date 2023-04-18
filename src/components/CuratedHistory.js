@@ -42,6 +42,8 @@ function CuratedHistory(props) {
             :
             <a className='p-4 m-4 w-full xl:w-3/5 sm:flex duration-700 bg-gray-200 hover:bg-gray-600 hover:text-white hover:border-white'
               href={`https://www.instagram.com/${item.author}`}
+              target='_blank'
+              rel='noopener noreferrer'
               key={uuidv4()}>
               <h3 className='flex-1 m-auto text-center'>@{item.author}</h3>
               <h3 className='flex-1 m-auto text-center border-current sm:border-l-2 sm:border-r-2'>{item.time}</h3>
