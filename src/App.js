@@ -70,7 +70,12 @@ function App() {
 
   return (
     <div>
-      <h1 className='text-3xl font-bold underline m-6'>Instagram History Finder</h1>
+      <div className='flex justify-between'>
+        <h1 className='text-3xl font-bold underline m-6'>Instagram History Finder</h1>
+        <a className='text-2xl p-4 m-2 underline duration-700 hover:bg-gray-600 hover:text-white'
+          href='https://github.com/tediferJones/instagram-history-finder'
+        >GitHub</a>
+      </div>
       <Guide />
       <FileSelector setInitialState={setInitialState} />
       <FilterSelector 
@@ -95,7 +100,7 @@ function App() {
 
 // TO-DO
 //    - Add error handling to FileSelector, see file for more details
-//      - Add error handling for when no zip file is selected, just throw an error saying no file selected
+//      - If one our desired files cannot be found, just use an empty array
 //    - Styling: Tailwind Cheat Sheet: https://nerdcave.com/tailwind-cheat-sheet
 //    - Add filters to show only videos or only posts
 

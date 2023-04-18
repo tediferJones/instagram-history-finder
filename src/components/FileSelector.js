@@ -1,9 +1,21 @@
 import JSZip from 'jszip';
+import { useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 function FileSelector(props) {
+  // rename to errors, and make it an array of strings
+  // if array is longer than 0, display errors to user
+  const [errors, setErrors] = useState([]);
+
   function getFiles(e) {
     e.preventDefault();
     const file = e.target.fileSelect.files[0];
+    if (file === undefined) {
+      setErrors(errors.concat('Error: No File Selected'))
+      return
+    } else {
+      setErrors(errors.filter(err => err !== 'Error: No File Selected'))
+    }
     const reader = new FileReader();
     reader.readAsArrayBuffer(file);
 
@@ -14,6 +26,9 @@ function FileSelector(props) {
       const unzippedData = await JSZip.loadAsync(e.target.result)
 
       // NEEDS ERROR HANDLING for cases like: 'Couldn't find videos_watched.json'
+      // If a file is not found, append a relevant error message to errors state, and set that variable to an empty array
+      // console.log(Object.keys(unzippedData.files).includes('ads_and_topics/videos_watched.json'))
+      // const availableFiles = Object.keys(unzippedData.files);
 
       // then grab the files (i.e. buffers) we want, and convert them to strings, then parse strings into JS objects
       // Also sanitize objects and add extra params if needed
@@ -52,17 +67,26 @@ function FileSelector(props) {
   }
 
   return (
-    <form onSubmit={getFiles} className='flex flex-wrap justify-center items-center p-8 gap-8 max-w-full'>
-      <input
-        className='flex-shrink text-lg bg-gray-200 p-4 cursor-pointer duration-700 hover:bg-gray-600 hover:text-white'
-        type='file'
-        id='fileSelect'
-        name='fileSelect'
-        accept='.zip'
-      />
-      <button className='text-xl bg-gray-200 p-4 hover:bg-gray-600 hover:text-white duration-700'
-      >UNZIP</button>
-    </form>
+    <>
+      <form onSubmit={getFiles} className='flex flex-wrap justify-center items-center p-8 gap-8 max-w-full'>
+        <input
+          className='flex-shrink text-lg bg-gray-200 p-4 cursor-pointer duration-700 hover:bg-gray-600 hover:text-white'
+          type='file'
+          id='fileSelect'
+          name='fileSelect'
+          accept='.zip'
+        />
+        <button className='text-xl bg-gray-200 p-4 hover:bg-gray-600 hover:text-white duration-700'
+        >UNZIP</button>
+      </form>
+      {errors.map(err => {
+        return (
+          <h3 className='text-2xl semi-bold p-8 pt-0 flex justify-center items-center'
+            key={uuidv4()}
+          >{err}</h3>
+        )
+      })}
+    </>
   )
 }
 
