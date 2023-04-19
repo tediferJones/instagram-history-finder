@@ -30,7 +30,7 @@ function App() {
   }
 
   function setInitialState(videoHistory, postHistory, adNames, followingNames) {
-    // Once our files have been extracted and turned into objects, we can set state of history and filters, based on certain values
+    // Format data and set the state
     const history = [...videoHistory, ...postHistory].sort((a, b) => a.timeStamp - b.timeStamp);
     let minDate = '';
     let maxDate = '';
@@ -76,7 +76,7 @@ function App() {
     <div>
       <div className='flex justify-between'>
         <h1 className='text-3xl font-bold underline m-6'>Instagram History Finder</h1>
-        <a className='text-2xl p-4 m-2 underline duration-700 hover:bg-gray-600 hover:text-white'
+        <a className='text-2xl p-4 my-auto underline duration-700 hover:bg-gray-600 hover:text-white'
           href='https://github.com/tediferJones/instagram-history-finder'
           target='_blank'
           rel='noopener noreferrer'

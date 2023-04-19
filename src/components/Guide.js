@@ -4,11 +4,6 @@ function Guide() {
   const [status, setStatus] = useState('hidden')
 
   function toggleGuide() {
-    if (status === 'hidden') {
-      setStatus('block')
-    } else {
-      setStatus('hidden');
-    }
     status === 'hidden' ? setStatus('block') : setStatus('hidden')
   }
 
@@ -22,6 +17,7 @@ function Guide() {
         >{status === 'hidden' ? 'Not sure what to do? Click Me!' : 'Close'}</h3>
 
         <ol className={'list-inside list-decimal ' + status}>
+          <p className='p-8 pb-0'>Note: Instagram only provides data for the last 7 days of activity</p>
           <li className='p-8'>Sign into&nbsp; 
             <a className='font-semibold underline'
               href='https://www.instagram.com'

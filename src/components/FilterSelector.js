@@ -1,9 +1,8 @@
 function FilterSelector(props) {
-  let idk = 'flex items-center gap-4'
   return (
     <form className=''>
       <div className='flex flex-wrap justify-center gap-8 text-lg'>
-        <div className={idk}>
+        <div className='flex items-center gap-4'>
           <label className='text-center cursor-pointer'
             htmlFor='filterStartDate'
           >FROM DATE</label>
@@ -18,7 +17,7 @@ function FilterSelector(props) {
           ></input>
         </div>
 
-        <div className={idk}>
+        <div className='flex items-center gap-4'>
           <label className='text-center cursor-pointer'
             htmlFor='filterEndDate'
           >TO DATE</label>
