@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/instagram-history-finder/static/css/main.4a8ebd18.css",
+    "main.js": "/instagram-history-finder/static/js/main.8f7c7cce.js",
+    "index.html": "/instagram-history-finder/index.html",
+    "main.4a8ebd18.css.map": "/instagram-history-finder/static/css/main.4a8ebd18.css.map",
+    "main.8f7c7cce.js.map": "/instagram-history-finder/static/js/main.8f7c7cce.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.4a8ebd18.css",
+    "static/js/main.8f7c7cce.js"
+  ]
+}
